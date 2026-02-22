@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plan My Week</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1a1208;
+    --surface: #251c0f;
+    --surface2: #2f2412;
+    --border: rgba(255,210,140,0.12);
+    --gold: #e8a93a;
+    --gold-light: #f5c96a;
+    --gold-dim: rgba(232,169,58,0.15);
+    --rust: #c95e2a;
+    --blue: #4a7eb5;
+    --purple: #8b5fa8;
+    --green: #5a9e6f;
+    --text: #f5ead8;
+    --text-muted: #9a876a;
+    --text-dim: #5a4e3a;
+    --radius: 16px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 10% 0%, rgba(232,169,58,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 100%, rgba(201,94,42,0.07) 0%, transparent 50%);
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 32px 16px 80px;
+  }
+
+  /* HEADER */
+  header {
+    text-align: center;
+    padding-bottom: 32px;
+  }
+
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .logo-icon {
+    width: 50px; height: 50px;
+    background: var(--gold);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.7rem;
+    box-shadow: 0 4px 20px rgba(232,169,58,0.35);
+  }
+
+  header h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2rem, 7vw, 3rem);
+    font-weight: 900;
+    color: var(--gold-light);
+    letter-spacing: -1.5px;
+    line-height: 1;
+  }
+
+  header p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    font-weight: 300;
+    margin-top: 6px;
+  }
+
+  /* STEPS */
+  .steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 30px;
+  }
+
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    transition: color 0.3s;
+  }
+
+  .step.active { color: var(--gold); }
+  .step.done   { color: var(--green); }
+
+  .step-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 2px solid var(--text-dim);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.78rem; font-weight: 700;
+    transition: all 0.3s;
+  }
+
+  .step.active .step-num { background: var(--gold); border-color: var(--gold); color: var(--bg); }
+  .step.done .step-num   { background: var(--green); border-color: var(--green); color: white; }
+
+  .step-line {
+    width: 40px; height: 2px;
+    background: var(--border);
+    margin: 0 10px;
+  }
+
+  /* PHASE 1 */
+  .phase-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-bottom: 18px;
+  }
+
+  .week-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  @media (max-width: 620px) { .week-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 340px) { .week-grid { grid-template-columns: 1fr; } }
+
+  .day-selector {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 8px;
+    text-align: center;
+    transition: border-color 0.2s, background 0.2s;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .day-selector:nth-child(1) { animation-delay: 0.04s; }
+  .day-selector:nth-child(2) { animation-delay: 0.08s; }
+  .day-selector:nth-child(3) { animation-delay: 0.12s; }
+  .day-selector:nth-child(4) { animation-delay: 0.16s; }
+  .day-selector:nth-child(5) { animation-delay: 0.20s; }
+  .day-selector:nth-child(6) { animation-delay: 0.24s; }
+  .day-selector:nth-child(7) { animation-delay: 0.28s; }
+
+  .day-selector.has-type { border-color: rgba(232,169,58,0.35); background: var(--surface2); }
+
+  .day-label {
+    font-family: 'Fraunces', serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+
+  .type-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .type-btn {
+    padding: 7px 5px;
+    border-radius: 8px;
+    border: 1.5px solid transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    letter-spacing: 0.2px;
+    background: transparent;
+  }
+
+  .type-btn:hover { filter: brightness(1.2); transform: scale(1.04); }
+
+  .type-btn.quick   { color: var(--rust);   border-color: rgba(201,94,42,0.3); }
+  .type-btn.long    { color: var(--blue);   border-color: rgba(74,126,181,0.3); }
+  .type-btn.special { color: #b884d8;       border-color: rgba(139,95,168,0.3); }
+  .type-btn.conv    { color: var(--green);  border-color: rgba(90,158,111,0.3); }
+
+  .type-btn.quick.active   { background: var(--rust);   color: white; border-color: var(--rust); }
+  .type-btn.long.active    { background: var(--blue);   color: white; border-color: var(--blue); }
+  .type-btn.special.active { background: var(--purple); color: white; border-color: var(--purple); }
+  .type-btn.conv.active    { background: var(--green);  color: white; border-color: var(--green); }
+
+  .day-set-label {
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    margin-top: 8px;
+    font-style: italic;
+    min-height: 14px;
+    transition: color 0.2s;
+  }
+
+  .day-set-label.set { color: var(--gold); font-style: normal; font-weight: 700; }
+
+  /* GENERATE BUTTON */
+  .generate-wrap { text-align: center; }
+
+  .btn-generate {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 38px;
+    background: var(--gold);
+    color: var(--bg);
+    border: none;
+    border-radius: 50px;
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 6px 28px rgba(232,169,58,0.35);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-generate::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+  }
+
+  .btn-generate:hover {
+    background: var(--gold-light);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 36px rgba(232,169,58,0.45);
+  }
+
+  .btn-generate:disabled {
+    background: var(--surface2);
+    color: var(--text-dim);
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-count {
+    background: rgba(0,0,0,0.18);
+    border-radius: 20px;
+    padding: 2px 9px;
+    font-size: 0.78rem;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* PHASE 2 */
+  #phase-plan { display: none; animation: fadeUp 0.5s ease both; }
+  #phase-plan.visible { display: block; }
+
+  .plan-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+
+  .plan-header h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.6rem;
+    color: var(--gold-light);
+    font-weight: 900;
+  }
+
+  .plan-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .btn-sm {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 16px;
+    border-radius: 30px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+
+  .btn-sm:hover { background: var(--surface2); color: var(--text); border-color: rgba(255,210,140,0.25); transform: translateY(-1px); }
+  .btn-sm.gold  { background: var(--gold-dim); color: var(--gold); border-color: rgba(232,169,58,0.3); }
+  .btn-sm.gold:hover { background: var(--gold); color: var(--bg); }
+
+  .plan-grid { display: grid; gap: 11px; }
+
+  .plan-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    display: grid;
+    grid-template-columns: 100px 1fr auto;
+    align-items: center;
+    gap: 16px;
+    transition: border-color 0.2s, transform 0.15s;
+    animation: fadeUp 0.4s ease both;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .plan-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    border-radius: 4px 0 0 4px;
+  }
+
+  .plan-card.quick::before   { background: var(--rust); }
+  .plan-card.long::before    { background: var(--blue); }
+  .plan-card.special::before { background: var(--purple); }
+  .plan-card.conv::before    { background: var(--green); }
+
+  .plan-card:nth-child(1) { animation-delay: 0.05s; }
+  .plan-card:nth-child(2) { animation-delay: 0.10s; }
+  .plan-card:nth-child(3) { animation-delay: 0.15s; }
+  .plan-card:nth-child(4) { animation-delay: 0.20s; }
+  .plan-card:nth-child(5) { animation-delay: 0.25s; }
+  .plan-card:nth-child(6) { animation-delay: 0.30s; }
+  .plan-card:nth-child(7) { animation-delay: 0.35s; }
+
+  .plan-card:hover { border-color: rgba(255,210,140,0.22); transform: translateX(3px); }
+
+  .plan-day .d-name {
+    font-family: 'Fraunces', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    display: block;
+  }
+
+  .plan-day .d-type {
+    font-size: 0.68rem;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-top: 3px;
+    display: block;
+  }
+
+  .plan-card.quick .d-type   { color: var(--rust); }
+  .plan-card.long .d-type    { color: var(--blue); }
+  .plan-card.special .d-type { color: #b884d8; }
+  .plan-card.conv .d-type    { color: var(--green); }
+
+  .plan-meal {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    transition: opacity 0.15s, transform 0.15s;
+  }
+
+  .plan-meal.shuffling { opacity: 0; transform: translateY(5px); }
+
+  .btn-shuffle {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: var(--surface2);
+    color: var(--text-muted);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .btn-shuffle:hover {
+    background: var(--gold-dim);
+    color: var(--gold);
+    border-color: rgba(232,169,58,0.4);
+    transform: rotate(25deg) scale(1.1);
+  }
+
+  .btn-shuffle:active { transform: rotate(180deg) scale(0.9); }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+  }
+
+  @media (max-width: 480px) {
+    .plan-card { grid-template-columns: 72px 1fr auto; gap: 10px; padding: 14px; }
+    .plan-meal { font-size: 0.95rem; }
+  }
+
+  @media print {
+    body { background: white; color: black; }
+    .steps, .type-btns, .btn-generate, .plan-actions, .btn-shuffle,
+    #phase-select, .divider { display: none !important; }
+    .plan-card { border: 1px solid #ccc; box-shadow: none; break-inside: avoid; }
+    .plan-card::before { display: none; }
+    .plan-day .d-name, .plan-meal { color: black; }
+    .plan-day .d-type { color: #555; }
+    header h1 { color: #333; }
+    header p { color: #666; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 28px; left: 50%;
+    transform: translateX(-50%) translateY(60px);
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 11px 22px;
+    border-radius: 30px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    z-index: 999;
+    transition: transform 0.3s ease;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    white-space: nowrap;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🍽️</div>
+      <h1>Plan My Week</h1>
+    </div>
+    <p>Pick a meal type for each day, then generate your weekly dinner plan</p>
+  </header>
+
+  <!-- Step indicator -->
+  <div class="steps">
+    <div class="step active" id="step1">
+      <div class="step-num" id="step1-num">1</div>
+      <span>Choose Types</span>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step2">
+      <div class="step-num" id="step2-num">2</div>
+      <span>Your Meal Plan</span>
+    </div>
+  </div>
+
+  <!-- PHASE 1 -->
+  <div id="phase-select">
+    <p class="phase-title">What kind of dinner do you fancy each evening?</p>
+    <div class="week-grid" id="week-grid"></div>
+    <div class="generate-wrap">
+      <button class="btn-generate" id="btn-generate" onclick="generatePlan()" disabled>
+        ✨ Generate Meal Plan
+        <span class="btn-count" id="btn-count">0 / 7</span>
+      </button>
+    </div>
+  </div>
+
+  <hr class="divider" id="divider" style="display:none">
+
+  <!-- PHASE 2 -->
+  <div id="phase-plan">
+    <div class="plan-header">
+      <h2>🗓️ Your Week</h2>
+      <div class="plan-actions">
+        <button class="btn-sm gold" onclick="shuffleAll()">🎲 Shuffle All</button>
+        <button class="btn-sm" onclick="editTypes()">✏️ Change Types</button>
+        <button class="btn-sm" onclick="window.print()">🖨️ Print</button>
+      </div>
+    </div>
+    <div class="plan-grid" id="plan-grid"></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATA ─────────────────────────────────────────
+const allMeals = [
+  { meal: "Spaghetti Bolognese", prep_time: "quick",       meal_type: "meat" },
+  { meal: "Stir Fry",            prep_time: "quick",       meal_type: "meat" },
+  { meal: "Thai Curry",          prep_time: "quick",       meal_type: "meat" },
+  { meal: "Chickpea Curry",      prep_time: "quick",       meal_type: "veg"  },
+  { meal: "Mushroom Pasta",      prep_time: "quick",       meal_type: "veg"  },
+  { meal: "Meatballs",           prep_time: "quick",       meal_type: "meat" },
+  { meal: "Chicken Wraps",       prep_time: "quick",       meal_type: "meat" },
+  { meal: "Lasagna",             prep_time: "long",        meal_type: "meat" },
+  { meal: "Sausage and Mash",    prep_time: "long",        meal_type: "meat" },
+  { meal: "Chicken Legs",        prep_time: "long",        meal_type: "meat" },
+  { meal: "Toad in the Hole",    prep_time: "long",        meal_type: "meat" },
+  { meal: "Gammon",              prep_time: "long",        meal_type: "meat" },
+  { meal: "Mac & Cheese",        prep_time: "long",        meal_type: "veg"  },
+  { meal: "Bombay Curry",        prep_time: "long",        meal_type: "meat" },
+  { meal: "Roast",               prep_time: "special",     meal_type: "meat" },
+  { meal: "Hog Roast",           prep_time: "special",     meal_type: "meat" },
+  { meal: "Duck",                prep_time: "special",     meal_type: "meat" },
+  { meal: "Biryani",             prep_time: "special",     meal_type: "meat" },
+  { meal: "Paella",              prep_time: "special",     meal_type: "meat" },
+  { meal: "Ribs",                prep_time: "special",     meal_type: "meat" },
+  { meal: "Homemade Pizza",      prep_time: "special",     meal_type: "meat" },
+  { meal: "Pizza Meat",          prep_time: "convenience", meal_type: "meat" },
+  { meal: "Pizza Veg",           prep_time: "convenience", meal_type: "veg"  },
+  { meal: "Chicken & Rice",      prep_time: "convenience", meal_type: "veg"  },
+  { meal: "Nuggets",             prep_time: "convenience", meal_type: "meat" },
+  { meal: "Fish Fingers",        prep_time: "convenience", meal_type: "meat" },
+  { meal: "Fish Cakes",          prep_time: "convenience", meal_type: "meat" },
+  { meal: "Pasta Sauce",         prep_time: "convenience", meal_type: "meat" },
+];
+
+const mealsByType = {
+  quick:       allMeals.filter(m => m.prep_time === "quick").map(m => m.meal),
+  long:        allMeals.filter(m => m.prep_time === "long").map(m => m.meal),
+  special:     allMeals.filter(m => m.prep_time === "special").map(m => m.meal),
+  convenience: allMeals.filter(m => m.prep_time === "convenience").map(m => m.meal),
+};
+
+const typeConfig = {
+  quick:       { label: "⚡ Quick",      cls: "quick"   },
+  long:        { label: "🕐 Long",       cls: "long"    },
+  special:     { label: "⭐ Special",    cls: "special" },
+  convenience: { label: "📦 Convenient", cls: "conv"    },
+};
+
+const days = [
+  { id: "mon", short: "Mon", name: "Monday"    },
+  { id: "tue", short: "Tue", name: "Tuesday"   },
+  { id: "wed", short: "Wed", name: "Wednesday" },
+  { id: "thu", short: "Thu", name: "Thursday"  },
+  { id: "fri", short: "Fri", name: "Friday"    },
+  { id: "sat", short: "Sat", name: "Saturday"  },
+  { id: "sun", short: "Sun", name: "Sunday"    },
+];
+
+const state = {};
+days.forEach(d => { state[d.id] = { type: null, meal: null }; });
+
+// ── BUILD SELECTOR ────────────────────────────────
+function buildGrid() {
+  const grid = document.getElementById('week-grid');
+  grid.innerHTML = '';
+  days.forEach(day => {
+    const card = document.createElement('div');
+    card.className = 'day-selector';
+    card.id = 'sel-' + day.id;
+
+    const btnsHtml = Object.entries(typeConfig).map(([key, cfg]) =>
+      `<button class="type-btn ${cfg.cls}" onclick="pickType('${day.id}','${key}',this)">${cfg.label}</button>`
+    ).join('');
+
+    card.innerHTML = `
+      <div class="day-label">${day.short}</div>
+      <div class="type-btns">${btnsHtml}</div>
+      <div class="day-set-label" id="badge-${day.id}">not set</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function pickType(dayId, type, btn) {
+  // Toggle off if same
+  if (state[dayId].type === type) {
+    state[dayId].type = null;
+    const card = document.getElementById('sel-' + dayId);
+    card.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+    card.classList.remove('has-type');
+    const badge = document.getElementById('badge-' + dayId);
+    badge.textContent = 'not set';
+    badge.classList.remove('set');
+    updateGenerateBtn();
+    return;
+  }
+
+  state[dayId].type = type;
+  const card = document.getElementById('sel-' + dayId);
+  card.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  card.classList.add('has-type');
+
+  const badge = document.getElementById('badge-' + dayId);
+  badge.textContent = '✓ ' + typeConfig[type].label.split(' ')[1];
+  badge.classList.add('set');
+
+  updateGenerateBtn();
+}
+
+function updateGenerateBtn() {
+  const count = days.filter(d => state[d.id].type).length;
+  document.getElementById('btn-count').textContent = `${count} / 7`;
+  document.getElementById('btn-generate').disabled = count === 0;
+}
+
+// ── GENERATE ──────────────────────────────────────
+function pickRandom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function generatePlan() {
+  days.forEach(d => {
+    const type = state[d.id].type;
+    state[d.id].meal = type ? pickRandom(mealsByType[type]) : null;
+  });
+
+  renderPlan();
+
+  document.getElementById('divider').style.display = '';
+  const plan = document.getElementById('phase-plan');
+  plan.classList.add('visible');
+
+  // Step indicator update
+  document.getElementById('step1').classList.remove('active');
+  document.getElementById('step1').classList.add('done');
+  document.getElementById('step1-num').textContent = '✓';
+  document.getElementById('step2').classList.add('active');
+
+  setTimeout(() => {
+    document.getElementById('phase-plan').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
+
+function renderPlan() {
+  const grid = document.getElementById('plan-grid');
+  const planned = days.filter(d => state[d.id].type && state[d.id].meal);
+
+  grid.innerHTML = planned.map((d, i) => {
+    const s = state[d.id];
+    const cfg = typeConfig[s.type];
+    return `
+      <div class="plan-card ${cfg.cls}" style="animation-delay:${i * 0.06}s">
+        <div class="plan-day">
+          <span class="d-name">${d.name}</span>
+          <span class="d-type">${cfg.label}</span>
+        </div>
+        <div class="plan-meal" id="meal-${d.id}">${s.meal}</div>
+        <button class="btn-shuffle" title="Try a different meal" onclick="shuffleDay('${d.id}')">🔀</button>
+      </div>
+    `;
+  }).join('');
+}
+
+// ── SHUFFLE ───────────────────────────────────────
+function shuffleDay(dayId) {
+  const pool = mealsByType[state[dayId].type];
+  if (pool.length <= 1) { showToast('No other options in this category!'); return; }
+
+  let newMeal;
+  let tries = 0;
+  do { newMeal = pickRandom(pool); tries++; }
+  while (newMeal === state[dayId].meal && tries < 15);
+
+  const el = document.getElementById('meal-' + dayId);
+  el.classList.add('shuffling');
+  setTimeout(() => {
+    state[dayId].meal = newMeal;
+    el.textContent = newMeal;
+    el.classList.remove('shuffling');
+  }, 160);
+}
+
+function shuffleAll() {
+  days.forEach(d => {
+    if (!state[d.id].type) return;
+    const pool = mealsByType[state[d.id].type];
+    let newMeal, tries = 0;
+    do { newMeal = pickRandom(pool); tries++; }
+    while (newMeal === state[d.id].meal && tries < 15);
+    state[d.id].meal = newMeal;
+  });
+
+  document.querySelectorAll('.plan-meal').forEach(el => el.classList.add('shuffling'));
+  setTimeout(() => {
+    days.forEach(d => {
+      const el = document.getElementById('meal-' + d.id);
+      if (el && state[d.id].meal) {
+        el.textContent = state[d.id].meal;
+        el.classList.remove('shuffling');
+      }
+    });
+  }, 160);
+
+  showToast('🎲 New meals suggested!');
+}
+
+function editTypes() {
+  document.getElementById('phase-plan').classList.remove('visible');
+  document.getElementById('divider').style.display = 'none';
+  document.getElementById('step1').classList.remove('done');
+  document.getElementById('step1').classList.add('active');
+  document.getElementById('step1-num').textContent = '1';
+  document.getElementById('step2').classList.remove('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+buildGrid();
+</script>
+</body>
+</html>
