@@ -48,19 +48,6 @@
   }
   header p { color: var(--text-muted); font-size: 0.95rem; font-weight: 300; margin-top: 6px; }
 
-  /* LOADING */
-  .loading-msg {
-    display: none; align-items: center; justify-content: center;
-    gap: 10px; padding: 14px; color: var(--text-muted);
-    font-size: 0.9rem; font-weight: 600;
-  }
-  .spinner {
-    width: 18px; height: 18px; border: 2px solid var(--border);
-    border-top-color: var(--rust); border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
   /* STEPS */
   .steps { display: flex; align-items: center; justify-content: center; margin-bottom: 30px; }
   .step {
@@ -81,7 +68,7 @@
 
   /* PHASE 1 */
   .phase-title { font-family: 'Fraunces', serif; font-size: 1rem; color: var(--text-muted); margin-bottom: 18px; }
-  .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-bottom: 28px; transition: opacity 0.3s; }
+  .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-bottom: 28px; }
   @media (max-width: 620px) { .week-grid { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 340px) { .week-grid { grid-template-columns: 1fr; } }
 
@@ -109,7 +96,7 @@
     font-family: 'DM Sans', sans-serif; font-size: 0.7rem; font-weight: 700;
     cursor: pointer; transition: all 0.15s; text-align: center; background: transparent;
   }
-  .type-btn:hover { filter: brightness(0.9); transform: scale(1.04); }
+  .type-btn:hover { filter: brightness(0.88); transform: scale(1.04); }
   .type-btn.quick   { color: var(--rust);   border-color: rgba(192,82,42,0.3); }
   .type-btn.long    { color: var(--blue);   border-color: rgba(58,110,160,0.3); }
   .type-btn.special { color: var(--purple); border-color: rgba(122,79,154,0.3); }
@@ -153,10 +140,10 @@
     color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 0.82rem;
     font-weight: 700; cursor: pointer; transition: all 0.18s;
   }
-  .btn-sm:hover       { background: #f5ede0; color: var(--text); border-color: rgba(180,120,60,0.25); transform: translateY(-1px); }
-  .btn-sm.gold        { background: var(--gold-dim); color: var(--gold); border-color: rgba(212,131,42,0.3); }
-  .btn-sm.gold:hover  { background: var(--rust); color: white; border-color: var(--rust); }
-  .btn-sm.danger      { color: #c0392b; border-color: rgba(192,57,43,0.25); }
+  .btn-sm:hover        { background: #f5ede0; color: var(--text); border-color: rgba(180,120,60,0.25); transform: translateY(-1px); }
+  .btn-sm.gold         { background: var(--gold-dim); color: var(--gold); border-color: rgba(212,131,42,0.3); }
+  .btn-sm.gold:hover   { background: var(--rust); color: white; border-color: var(--rust); }
+  .btn-sm.danger       { color: #c0392b; border-color: rgba(192,57,43,0.25); }
   .btn-sm.danger:hover { background: #c0392b; color: white; border-color: #c0392b; }
 
   .plan-grid { display: grid; gap: 11px; }
@@ -242,34 +229,46 @@
   .sheet-note {
     margin-top: 14px; padding: 12px 14px; background: #fff8ee;
     border: 1px solid rgba(212,131,42,0.25); border-radius: 10px;
-    font-size: 0.82rem; color: var(--text-muted); line-height: 1.5;
+    font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;
   }
-  .sheet-note a { color: var(--rust); font-weight: 700; }
+  .sheet-note a { color: var(--rust); font-weight: 700; text-decoration: none; }
+  .sheet-note a:hover { text-decoration: underline; }
 
-  /* DIVIDER */
+  /* MEAL LIST in Add panel */
+  .current-meals { margin-top: 18px; }
+  .current-meals-title {
+    font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 10px;
+  }
+  .meal-tags { display: flex; flex-wrap: wrap; gap: 7px; }
+  .meal-tag {
+    padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 600;
+    border: 1.5px solid transparent;
+  }
+  .meal-tag.quick   { background: rgba(192,82,42,0.08);  color: var(--rust);   border-color: rgba(192,82,42,0.2); }
+  .meal-tag.long    { background: rgba(58,110,160,0.08); color: var(--blue);   border-color: rgba(58,110,160,0.2); }
+  .meal-tag.special { background: rgba(122,79,154,0.08); color: var(--purple); border-color: rgba(122,79,154,0.2); }
+  .meal-tag.conv    { background: rgba(74,140,95,0.08);  color: var(--green);  border-color: rgba(74,140,95,0.2); }
+
   .divider { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
 
-  /* PRINT */
   @media print {
     body { background: white; color: black; }
     .steps, .type-btns, .btn-generate, .plan-actions, .btn-shuffle,
-    #phase-select, .divider, .add-meal-section, .loading-msg { display: none !important; }
+    #phase-select, .divider, .add-meal-section { display: none !important; }
     .plan-card { border: 1px solid #ccc; box-shadow: none; break-inside: avoid; }
     .plan-card::before { display: none; }
     .plan-day .d-name, .plan-meal { color: black; }
     .plan-day .d-type { color: #555; }
   }
-
   @media (max-width: 480px) {
     .plan-card { grid-template-columns: 72px 1fr auto; gap: 10px; padding: 14px; }
     .plan-meal { font-size: 0.95rem; }
   }
-
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(18px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-
   .toast {
     position: fixed; bottom: 28px; left: 50%;
     transform: translateX(-50%) translateY(60px);
@@ -291,7 +290,6 @@
     <p>Pick a meal type for each day, then generate your weekly dinner plan</p>
   </header>
 
-  <!-- Step indicator -->
   <div class="steps">
     <div class="step active" id="step1">
       <div class="step-num" id="step1-num">1</div>
@@ -304,11 +302,7 @@
     </div>
   </div>
 
-  <!-- PHASE 1 -->
   <div id="phase-select">
-    <div class="loading-msg" id="loading-msg">
-      <div class="spinner"></div> Loading your meals...
-    </div>
     <p class="phase-title">What kind of dinner do you fancy each evening?</p>
     <div class="week-grid" id="week-grid"></div>
     <div class="generate-wrap">
@@ -321,7 +315,6 @@
 
   <hr class="divider" id="divider" style="display:none">
 
-  <!-- PHASE 2 -->
   <div id="phase-plan">
     <div class="plan-header">
       <h2>🗓️ Your Week</h2>
@@ -335,7 +328,6 @@
     <div class="plan-grid" id="plan-grid"></div>
   </div>
 
-  <!-- ADD MEAL -->
   <div class="add-meal-section">
     <div class="add-meal-header" id="add-meal-toggle" onclick="toggleAddMeal()">
       <h3>➕ Add a New Meal</h3>
@@ -359,8 +351,11 @@
         <button class="btn-add-meal" onclick="addMeal()">+ Add Meal</button>
       </div>
       <div class="sheet-note">
-        📊 Meals live in your <a href="https://docs.google.com/spreadsheets/d/1jZCs6YsjVko83r5deq4DW2Vl-HN_PEI49yuUxMoMeiI/edit?gid=0#gid=0" target="_blank">Google Sheet</a>. Type a meal name above and hit <strong>+ Add Meal</strong> — it copies the details and opens the sheet automatically. Paste into a new row, save, then reload this page and the meal will appear!
+        💡 Clicking <strong>+ Add Meal</strong> will save it for this session and open your
+        <a href="https://docs.google.com/spreadsheets/d/1jZCs6YsjVko83r5deq4DW2Vl-HN_PEI49yuUxMoMeiI/edit?gid=0#gid=0" target="_blank">Google Sheet</a>
+        so you can add it there permanently too. Once added to the sheet, ask Nikhil to update the app and it'll be available on all devices forever!
       </div>
+      <div class="current-meals" id="current-meals"></div>
     </div>
   </div>
 
@@ -368,77 +363,81 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ── GOOGLE SHEETS SOURCE ──────────────────────────
-const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsJcx9VBerTHac13Vl0lDGv3pKZH9dM_ULsLtc4fUmJAmQsz4V9j06zjd44xBtzJwGxHzJrUypXFWM/pub?gid=0&single=true&output=csv';
-// Direct edit link (not the CSV link — this opens the actual sheet)
-const SHEET_EDIT_URL = 'https://docs.google.com/spreadsheets/d/1' + 'placeholder'; // replaced below
+// ── MEALS DATA ────────────────────────────────────
+// To add a meal permanently: add a row to the Google Sheet, then
+// also add a line here in the same format and update index.html on GitHub
+const allMeals = [
+  { meal: "Spaghetti Bolognese", prep_time: "quick" },
+  { meal: "Stir Fry",            prep_time: "quick" },
+  { meal: "Thai Curry",          prep_time: "quick" },
+  { meal: "Chickpea Curry",      prep_time: "quick" },
+  { meal: "Mushroom Pasta",      prep_time: "quick" },
+  { meal: "Meatballs",           prep_time: "quick" },
+  { meal: "Chicken Wraps",       prep_time: "quick" },
+  { meal: "Lasagna",             prep_time: "long"  },
+  { meal: "Sausage and Mash",    prep_time: "long"  },
+  { meal: "Chicken Legs",        prep_time: "long"  },
+  { meal: "Toad in the Hole",    prep_time: "long"  },
+  { meal: "Gammon",              prep_time: "long"  },
+  { meal: "Mac & Cheese",        prep_time: "long"  },
+  { meal: "Bombay Curry",        prep_time: "long"  },
+  { meal: "Roast",               prep_time: "special" },
+  { meal: "Hog Roast",           prep_time: "special" },
+  { meal: "Duck",                prep_time: "special" },
+  { meal: "Biryani",             prep_time: "special" },
+  { meal: "Paella",              prep_time: "special" },
+  { meal: "Ribs",                prep_time: "special" },
+  { meal: "Homemade Pizza",      prep_time: "special" },
+  { meal: "Pizza Meat",          prep_time: "convenience" },
+  { meal: "Pizza Veg",           prep_time: "convenience" },
+  { meal: "Chicken & Rice",      prep_time: "convenience" },
+  { meal: "Nuggets",             prep_time: "convenience" },
+  { meal: "Fish Fingers",        prep_time: "convenience" },
+  { meal: "Fish Cakes",          prep_time: "convenience" },
+  { meal: "Pasta Sauce",         prep_time: "convenience" },
+];
 
-const mealsByType = { quick: [], long: [], special: [], convenience: [] };
-
-async function loadMealsFromSheet() {
-  showLoading(true);
-  try {
-    const resp = await fetch(SHEET_URL);
-    const text = await resp.text();
-    Object.keys(mealsByType).forEach(k => mealsByType[k] = []);
-    const rows = text.trim().split('\n').slice(1);
-    rows.forEach(row => {
-      const parts = row.split(',');
-      const meal = (parts[0] || '').replace(/^"|"$/g, '').trim();
-      const type = (parts[1] || '').replace(/^"|"$/g, '').trim();
-      if (meal && mealsByType[type] !== undefined) {
-        mealsByType[type].push(meal);
-      }
-    });
-    showLoading(false);
-    updateGenerateBtn();
-  } catch(e) {
-    showLoading(false);
-    showToast('Could not load meals — check your connection');
-  }
-}
-
-function showLoading(on) {
-  document.getElementById('loading-msg').style.display = on ? 'flex' : 'none';
-  document.getElementById('week-grid').style.opacity  = on ? '0.3' : '1';
-  if (on) document.getElementById('btn-generate').disabled = true;
-}
+const mealsByType = {
+  quick:       allMeals.filter(m => m.prep_time === "quick").map(m => m.meal),
+  long:        allMeals.filter(m => m.prep_time === "long").map(m => m.meal),
+  special:     allMeals.filter(m => m.prep_time === "special").map(m => m.meal),
+  convenience: allMeals.filter(m => m.prep_time === "convenience").map(m => m.meal),
+};
 
 // ── CONFIG ────────────────────────────────────────
 const typeConfig = {
-  quick:       { label: '⚡ Quick',      cls: 'quick'   },
-  long:        { label: '🕐 Long',       cls: 'long'    },
-  special:     { label: '⭐ Special',    cls: 'special' },
-  convenience: { label: '📦 Convenient', cls: 'conv'    },
+  quick:       { label: "⚡ Quick",      cls: "quick"   },
+  long:        { label: "🕐 Long",       cls: "long"    },
+  special:     { label: "⭐ Special",    cls: "special" },
+  convenience: { label: "📦 Convenient", cls: "conv"    },
 };
 const days = [
-  { id: 'mon', short: 'Mon', name: 'Monday'    },
-  { id: 'tue', short: 'Tue', name: 'Tuesday'   },
-  { id: 'wed', short: 'Wed', name: 'Wednesday' },
-  { id: 'thu', short: 'Thu', name: 'Thursday'  },
-  { id: 'fri', short: 'Fri', name: 'Friday'    },
-  { id: 'sat', short: 'Sat', name: 'Saturday'  },
-  { id: 'sun', short: 'Sun', name: 'Sunday'    },
+  { id: "mon", short: "Mon", name: "Monday"    },
+  { id: "tue", short: "Tue", name: "Tuesday"   },
+  { id: "wed", short: "Wed", name: "Wednesday" },
+  { id: "thu", short: "Thu", name: "Thursday"  },
+  { id: "fri", short: "Fri", name: "Friday"    },
+  { id: "sat", short: "Sat", name: "Saturday"  },
+  { id: "sun", short: "Sun", name: "Sunday"    },
 ];
 const state = {};
 days.forEach(d => { state[d.id] = { type: null, meal: null }; });
 
 // ── BUILD GRID ────────────────────────────────────
 function buildGrid() {
-  const grid = document.getElementById('week-grid');
-  grid.innerHTML = '';
+  const grid = document.getElementById("week-grid");
+  grid.innerHTML = "";
   days.forEach(day => {
-    const card = document.createElement('div');
-    card.className = 'day-selector';
-    card.id = 'sel-' + day.id;
+    const card = document.createElement("div");
+    card.className = "day-selector";
+    card.id = "sel-" + day.id;
     const btnsHtml = Object.entries(typeConfig).map(([key, cfg]) =>
       `<button class="type-btn ${cfg.cls}" onclick="pickType('${day.id}','${key}',this)">${cfg.label}</button>`
-    ).join('');
+    ).join("");
     card.innerHTML = `
       <div class="day-label">${day.short}</div>
       <div class="type-btns">${btnsHtml}</div>
-      <div class="day-set-label" id="badge-${day.id}">not set</div>
-    `;
+      <div class="day-set-label" id="badge-${day.id}">not set</div>`;
     grid.appendChild(card);
   });
 }
@@ -446,26 +445,26 @@ function buildGrid() {
 function pickType(dayId, type, btn) {
   if (state[dayId].type === type) {
     state[dayId].type = null;
-    document.getElementById('sel-' + dayId).querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('sel-' + dayId).classList.remove('has-type');
-    const badge = document.getElementById('badge-' + dayId);
-    badge.textContent = 'not set'; badge.classList.remove('set');
+    document.getElementById("sel-" + dayId).querySelectorAll(".type-btn").forEach(b => b.classList.remove("active"));
+    document.getElementById("sel-" + dayId).classList.remove("has-type");
+    const badge = document.getElementById("badge-" + dayId);
+    badge.textContent = "not set"; badge.classList.remove("set");
     updateGenerateBtn(); return;
   }
   state[dayId].type = type;
-  document.getElementById('sel-' + dayId).querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('sel-' + dayId).classList.add('has-type');
-  const badge = document.getElementById('badge-' + dayId);
-  badge.textContent = '✓ ' + typeConfig[type].label.split(' ')[1];
-  badge.classList.add('set');
+  document.getElementById("sel-" + dayId).querySelectorAll(".type-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  document.getElementById("sel-" + dayId).classList.add("has-type");
+  const badge = document.getElementById("badge-" + dayId);
+  badge.textContent = "✓ " + typeConfig[type].label.split(" ")[1];
+  badge.classList.add("set");
   updateGenerateBtn();
 }
 
 function updateGenerateBtn() {
   const count = days.filter(d => state[d.id].type).length;
-  document.getElementById('btn-count').textContent = count + ' / 7';
-  document.getElementById('btn-generate').disabled = count === 0;
+  document.getElementById("btn-count").textContent = count + " / 7";
+  document.getElementById("btn-generate").disabled = count === 0;
 }
 
 // ── GENERATE ─────────────────────────────────────
@@ -477,17 +476,17 @@ function generatePlan() {
     state[d.id].meal = type ? pickRandom(mealsByType[type]) : null;
   });
   renderPlan();
-  document.getElementById('divider').style.display = '';
-  document.getElementById('phase-plan').classList.add('visible');
-  document.getElementById('step1').classList.remove('active');
-  document.getElementById('step1').classList.add('done');
-  document.getElementById('step1-num').textContent = '✓';
-  document.getElementById('step2').classList.add('active');
-  setTimeout(() => document.getElementById('phase-plan').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  document.getElementById("divider").style.display = "";
+  document.getElementById("phase-plan").classList.add("visible");
+  document.getElementById("step1").classList.remove("active");
+  document.getElementById("step1").classList.add("done");
+  document.getElementById("step1-num").textContent = "✓";
+  document.getElementById("step2").classList.add("active");
+  setTimeout(() => document.getElementById("phase-plan").scrollIntoView({ behavior: "smooth", block: "start" }), 100);
 }
 
 function renderPlan() {
-  const grid = document.getElementById('plan-grid');
+  const grid = document.getElementById("plan-grid");
   const planned = days.filter(d => state[d.id].type && state[d.id].meal);
   grid.innerHTML = planned.map((d, i) => {
     const s = state[d.id];
@@ -501,18 +500,18 @@ function renderPlan() {
         <div class="plan-meal" id="meal-${d.id}">${s.meal}</div>
         <button class="btn-shuffle" title="Try a different meal" onclick="shuffleDay('${d.id}')">🔀</button>
       </div>`;
-  }).join('');
+  }).join("");
 }
 
 // ── SHUFFLE ───────────────────────────────────────
 function shuffleDay(dayId) {
   const pool = mealsByType[state[dayId].type];
-  if (pool.length <= 1) { showToast('No other options in this category!'); return; }
+  if (pool.length <= 1) { showToast("No other options in this category!"); return; }
   let newMeal, tries = 0;
   do { newMeal = pickRandom(pool); tries++; } while (newMeal === state[dayId].meal && tries < 15);
-  const el = document.getElementById('meal-' + dayId);
-  el.classList.add('shuffling');
-  setTimeout(() => { state[dayId].meal = newMeal; el.textContent = newMeal; el.classList.remove('shuffling'); }, 160);
+  const el = document.getElementById("meal-" + dayId);
+  el.classList.add("shuffling");
+  setTimeout(() => { state[dayId].meal = newMeal; el.textContent = newMeal; el.classList.remove("shuffling"); }, 160);
 }
 
 function shuffleAll() {
@@ -523,73 +522,88 @@ function shuffleAll() {
     do { newMeal = pickRandom(pool); tries++; } while (newMeal === state[d.id].meal && tries < 15);
     state[d.id].meal = newMeal;
   });
-  document.querySelectorAll('.plan-meal').forEach(el => el.classList.add('shuffling'));
+  document.querySelectorAll(".plan-meal").forEach(el => el.classList.add("shuffling"));
   setTimeout(() => {
     days.forEach(d => {
-      const el = document.getElementById('meal-' + d.id);
-      if (el && state[d.id].meal) { el.textContent = state[d.id].meal; el.classList.remove('shuffling'); }
+      const el = document.getElementById("meal-" + d.id);
+      if (el && state[d.id].meal) { el.textContent = state[d.id].meal; el.classList.remove("shuffling"); }
     });
   }, 160);
-  showToast('🎲 New meals suggested!');
+  showToast("🎲 New meals suggested!");
 }
 
 function clearAll() {
   days.forEach(d => { state[d.id] = { type: null, meal: null }; });
-  document.getElementById('phase-plan').classList.remove('visible');
-  document.getElementById('divider').style.display = 'none';
-  document.getElementById('step1').classList.remove('done');
-  document.getElementById('step1').classList.add('active');
-  document.getElementById('step1-num').textContent = '1';
-  document.getElementById('step2').classList.remove('active');
+  document.getElementById("phase-plan").classList.remove("visible");
+  document.getElementById("divider").style.display = "none";
+  document.getElementById("step1").classList.remove("done");
+  document.getElementById("step1").classList.add("active");
+  document.getElementById("step1-num").textContent = "1";
+  document.getElementById("step2").classList.remove("active");
   buildGrid();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  showToast('🗑️ Cleared — start fresh!');
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  showToast("🗑️ Cleared — start fresh!");
 }
 
 function editTypes() {
-  document.getElementById('phase-plan').classList.remove('visible');
-  document.getElementById('divider').style.display = 'none';
-  document.getElementById('step1').classList.remove('done');
-  document.getElementById('step1').classList.add('active');
-  document.getElementById('step1-num').textContent = '1';
-  document.getElementById('step2').classList.remove('active');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.getElementById("phase-plan").classList.remove("visible");
+  document.getElementById("divider").style.display = "none";
+  document.getElementById("step1").classList.remove("done");
+  document.getElementById("step1").classList.add("active");
+  document.getElementById("step1-num").textContent = "1";
+  document.getElementById("step2").classList.remove("active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-// ── ADD MEAL (opens Google Sheet) ─────────────────
-const SHEET_EDIT_URL = 'https://docs.google.com/spreadsheets/d/1jZCs6YsjVko83r5deq4DW2Vl-HN_PEI49yuUxMoMeiI/edit?gid=0#gid=0';
-
+// ── ADD MEAL ──────────────────────────────────────
 function addMeal() {
-  const nameEl = document.getElementById('new-meal-name');
-  const typeEl = document.getElementById('new-meal-type');
+  const nameEl = document.getElementById("new-meal-name");
+  const typeEl = document.getElementById("new-meal-type");
   const name = nameEl.value.trim();
   const type = typeEl.value;
-  if (!name) { nameEl.focus(); showToast('Please enter a meal name!'); return; }
-  // Copy "mealname,type" to clipboard so she can paste straight into the sheet
-  const clipText = name + '\t' + type;
-  navigator.clipboard.writeText(clipText).catch(() => {});
-  // Open the sheet in a new tab
-  window.open(SHEET_EDIT_URL, '_blank');
-  showToast('Copied! Paste into the sheet, then reload ✅');
-  nameEl.value = '';
+  if (!name) { nameEl.focus(); showToast("Please enter a meal name!"); return; }
+  if (mealsByType[type].map(m => m.toLowerCase()).includes(name.toLowerCase())) {
+    showToast("That meal is already in this category!"); return;
+  }
+  // Add to live session
+  mealsByType[type].push(name);
+  nameEl.value = "";
+  renderCurrentMeals();
+  showToast("Added for this session! Open the sheet to save it permanently.");
+  // Open Google Sheet for permanent save
+  window.open("https://docs.google.com/spreadsheets/d/1jZCs6YsjVko83r5deq4DW2Vl-HN_PEI49yuUxMoMeiI/edit?gid=0#gid=0", "_blank");
+}
+
+function renderCurrentMeals() {
+  const container = document.getElementById("current-meals");
+  const clsMap = { quick: "quick", long: "long", special: "special", convenience: "conv" };
+  const allCurrent = Object.entries(mealsByType).flatMap(([type, meals]) =>
+    meals.map(meal => ({ meal, type }))
+  );
+  container.innerHTML = `
+    <div class="current-meals-title">All meals (${allCurrent.length})</div>
+    <div class="meal-tags">
+      ${allCurrent.map(m => `<span class="meal-tag ${clsMap[m.type]}">${m.meal}</span>`).join("")}
+    </div>`;
 }
 
 function toggleAddMeal() {
-  document.getElementById('add-meal-toggle').classList.toggle('open');
-  document.getElementById('add-meal-body').classList.toggle('open');
+  document.getElementById("add-meal-toggle").classList.toggle("open");
+  const body = document.getElementById("add-meal-body");
+  body.classList.toggle("open");
+  if (body.classList.contains("open")) renderCurrentMeals();
 }
 
 // ── TOAST ─────────────────────────────────────────
 function showToast(msg) {
-  const t = document.getElementById('toast');
+  const t = document.getElementById("toast");
   t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 3000);
 }
 
 // ── INIT ──────────────────────────────────────────
 buildGrid();
-loadMealsFromSheet();
 </script>
 </body>
 </html>
