@@ -562,9 +562,17 @@ function updateGenerateBtn() {
 function pickRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
 function generatePlan() {
+  // Track used meals per type so no duplicates across the week
+  const usedByType = { quick: [], long: [], special: [], convenience: [] };
   days.forEach(d => {
     const type = state[d.id].type;
-    state[d.id].meal = type ? pickRandom(mealsByType[type]) : null;
+    if (!type) { state[d.id].meal = null; return; }
+    const pool = mealsByType[type].filter(m => !usedByType[type].includes(m));
+    // If we've used all meals in this category, reset and start again
+    const pickFrom = pool.length > 0 ? pool : mealsByType[type];
+    const meal = pickRandom(pickFrom);
+    state[d.id].meal = meal;
+    usedByType[type].push(meal);
   });
   renderPlan();
   document.getElementById("divider").style.display = "";
@@ -606,12 +614,15 @@ function shuffleDay(dayId) {
 }
 
 function shuffleAll() {
+  const usedByType = { quick: [], long: [], special: [], convenience: [] };
   days.forEach(d => {
     if (!state[d.id].type) return;
-    const pool = mealsByType[state[d.id].type];
-    let newMeal, tries = 0;
-    do { newMeal = pickRandom(pool); tries++; } while (newMeal === state[d.id].meal && tries < 15);
+    const type = state[d.id].type;
+    const pool = mealsByType[type].filter(m => !usedByType[type].includes(m));
+    const pickFrom = pool.length > 0 ? pool : mealsByType[type];
+    const newMeal = pickRandom(pickFrom);
     state[d.id].meal = newMeal;
+    usedByType[type].push(newMeal);
   });
   document.querySelectorAll(".plan-meal").forEach(el => el.classList.add("shuffling"));
   setTimeout(() => {
