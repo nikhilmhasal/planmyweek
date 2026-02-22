@@ -265,6 +265,62 @@
     .plan-card { grid-template-columns: 72px 1fr auto; gap: 10px; padding: 14px; }
     .plan-meal { font-size: 0.95rem; }
   }
+
+  /* PASSWORD SCREEN */
+  #password-screen {
+    position: fixed; inset: 0; z-index: 9999;
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse at 15% 0%, rgba(212,131,42,0.10) 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 100%, rgba(192,82,42,0.08) 0%, transparent 55%);
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+  }
+  #password-screen.hidden { display: none; }
+  .pw-card {
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: 24px; padding: 40px 36px; width: 100%; max-width: 380px;
+    text-align: center; box-shadow: 0 8px 40px rgba(180,120,60,0.12);
+    animation: fadeUp 0.5s ease both;
+  }
+  .pw-icon {
+    width: 64px; height: 64px; background: var(--rust); border-radius: 18px;
+    display: flex; align-items: center; justify-content: center; font-size: 2rem;
+    margin: 0 auto 20px; box-shadow: 0 4px 20px rgba(192,82,42,0.30);
+  }
+  .pw-title {
+    font-family: 'Fraunces', serif; font-size: 1.8rem; font-weight: 900;
+    color: var(--rust); letter-spacing: -1px; margin-bottom: 6px;
+  }
+  .pw-subtitle { color: var(--text-muted); font-size: 0.9rem; font-weight: 300; margin-bottom: 28px; }
+  .pw-input {
+    width: 100%; padding: 13px 16px; border-radius: 12px;
+    border: 1.5px solid var(--border); background: white;
+    font-family: 'DM Sans', sans-serif; font-size: 1rem; color: var(--text);
+    text-align: center; letter-spacing: 2px; margin-bottom: 12px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .pw-input:focus { outline: none; border-color: var(--rust); box-shadow: 0 0 0 3px rgba(192,82,42,0.10); }
+  .pw-input.shake {
+    animation: shake 0.4s ease;
+    border-color: #c0392b;
+  }
+  .pw-btn {
+    width: 100%; padding: 13px; background: var(--rust); color: white; border: none;
+    border-radius: 12px; font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 700;
+    cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 16px rgba(192,82,42,0.25);
+  }
+  .pw-btn:hover { background: #a8401a; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(192,82,42,0.35); }
+  .pw-error {
+    color: #c0392b; font-size: 0.82rem; font-weight: 700;
+    margin-top: 10px; min-height: 20px; transition: opacity 0.2s;
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%       { transform: translateX(-8px); }
+    40%       { transform: translateX(8px); }
+    60%       { transform: translateX(-6px); }
+    80%       { transform: translateX(6px); }
+  }
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(18px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -280,6 +336,18 @@
 </style>
 </head>
 <body>
+<div id="password-screen">
+  <div class="pw-card">
+    <div class="pw-icon">🍽️</div>
+    <div class="pw-title">Plan My Week</div>
+    <div class="pw-subtitle">Enter your password to continue</div>
+    <input class="pw-input" id="pw-input" type="password" placeholder="••••••••••••"
+      onkeydown="if(event.key==='Enter') checkPassword()">
+    <button class="pw-btn" onclick="checkPassword()">Let me in</button>
+    <div class="pw-error" id="pw-error"></div>
+  </div>
+</div>
+
 <div class="container">
 
   <header>
@@ -363,6 +431,29 @@
 <div class="toast" id="toast"></div>
 
 <script>
+// ── PASSWORD ──────────────────────────────────────
+const PASSWORD = 'MealTime2025';
+
+function checkPassword() {
+  const input = document.getElementById('pw-input');
+  const error = document.getElementById('pw-error');
+  if (input.value === PASSWORD) {
+    sessionStorage.setItem('pmw_auth', '1');
+    document.getElementById('password-screen').classList.add('hidden');
+    error.textContent = '';
+  } else {
+    input.classList.add('shake');
+    error.textContent = 'Incorrect password — try again!';
+    input.value = '';
+    setTimeout(() => input.classList.remove('shake'), 400);
+  }
+}
+
+// Check if already authenticated this session
+if (sessionStorage.getItem('pmw_auth') === '1') {
+  document.getElementById('password-screen').classList.add('hidden');
+}
+
 // ── MEALS DATA ────────────────────────────────────
 // To add a meal permanently: add a row to the Google Sheet, then
 // also add a line here in the same format and update index.html on GitHub
